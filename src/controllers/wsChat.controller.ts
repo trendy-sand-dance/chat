@@ -1,11 +1,10 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { WebSocket } from '@fastify/websocket';
-import MessageHandler from '../messagehandler.js';
 import ClientManager from '../clientmanager';
-// import { RoomType } from '../types';
+import { messageHandlers } from '../messagehandler';
 
 const clientManager = new ClientManager();
-const messageHandler = new MessageHandler();
+
 
 export async function wsChatController(client: WebSocket, request: FastifyRequest) {
 
@@ -15,21 +14,26 @@ export async function wsChatController(client: WebSocket, request: FastifyReques
 
   client.on('message', async (message: ChatServerMessage) => {
 
-    console.log("(On message) Server received.");
-    const data = JSON.parse(message.toString());
-    console.log("Message: ", data);
+    try {
 
-    switch (data.type) {
+      const data: ChatServerMessage = JSON.parse(message.toString());
+      console.log("Message: ", data);
+      const handler = messageHandlers[data.type];
 
-      case "connect":
-        clientManager.addSession(client, data.user);
-
-        break;
-      case "disconnect":
-        clientManager.removeSession(data.id);
-        break;
+      if (handler) {
+        handler(data, client);
+      }
+      else {
+        console.error(`Unhandled message type: ${data.type}`);
+      }
 
     }
+    catch (error) {
+
+      console.error("Failed to process message: ", error);
+
+    }
+
 
   });
 

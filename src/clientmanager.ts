@@ -64,4 +64,7 @@ export default class ClientManager {
 
   }
 
+
 }
+
+export const clientManager = new ClientManager();
