@@ -13,7 +13,6 @@ export function broadcastToRoom(message: RoomMessage, sessions: Session[], exclu
 
 }
 
-
 // Message Handler
 type MessageHandler = (data: ChatServerMessage, client: WebSocket) => void;
 
@@ -21,7 +20,7 @@ export const messageHandlers: Record<string, MessageHandler> = {
 
   "connect": (data: ChatServerMessage, client: WebSocket) => {
     const message: ConnectMessage = data as ConnectMessage;
-    clientManager.addSession(client, message.user);
+    clientManager.addSession(client, message.user, message.room);
     const confirmMessage = {type:"confirm"};
     client.send(JSON.stringify(confirmMessage));
   },

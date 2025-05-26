@@ -15,15 +15,15 @@ export default class ClientManager {
 
   }
 
-  public addSession(socket: WebSocket, user: User): void {
+  public addSession(socket: WebSocket, user: User, room : RoomType): void {
 
     this._sessions.set(user.id, { socket, user });
+    this._rooms.get(room)?.add(user.id);
 
   }
 
   public removeSession(id: number): boolean {
 
-    console.log("Removing session: ", this._sessions.get(id));
     return this._sessions.delete(id);
 
   }
@@ -51,13 +51,16 @@ export default class ClientManager {
 
     let sessions: Session[] = [];
 
-    for (const id of this._rooms[room]) {
+    const ids = this._rooms.get(room);
 
-      const session = this._sessions.get(id);
-      if (session) {
-        sessions.push(session);
+    if (ids) {
+      for (const id of ids) {
+        const session = this._sessions.get(id);
+        if (session) {
+          sessions.push(session);
+        }
+
       }
-
     }
 
     return sessions;
