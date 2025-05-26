@@ -2,6 +2,7 @@ import ClientManager from './clientmanager';
 import { WebSocket } from "@fastify/websocket";
 import { clientManager } from './clientmanager';
 
+// Utility
 export function broadcastToRoom(message: RoomMessage, sessions: Session[], exclude: WebSocket | null) {
 
   sessions.forEach((session) => {
@@ -19,19 +20,20 @@ type MessageHandler = (data: ChatServerMessage, client: WebSocket) => void;
 export const messageHandlers: Record<string, MessageHandler> = {
 
   "connect": (data: ChatServerMessage, client: WebSocket) => {
-    const msg: ConnectMessage = data as ConnectMessage;
-    clientManager.addSession(client, msg.user);
+    const message: ConnectMessage = data as ConnectMessage;
+    clientManager.addSession(client, message.user);
+    const confirmMessage = {type:"confirm"};
+    client.send(JSON.stringify(confirmMessage));
   },
   "disconnect": (data: ChatServerMessage, client: WebSocket) => {
-    const msg: DisconnectMessage = data as DisconnectMessage;
-    clientManager.removeSession(msg.id);
+    const message: DisconnectMessage = data as DisconnectMessage;
+    clientManager.removeSession(message.id);
   },
   "room_chat": (data: ChatServerMessage, client: WebSocket) => {
-    const msg: RoomMessage = data as RoomMessage;
-    const sessions = clientManager.getSessionsFrom(msg.room);
-    broadcastToRoom(msg, sessions, client);
+    const message: RoomMessage = data as RoomMessage;
+    const sessions = clientManager.getSessionsFrom(message.room);
+    broadcastToRoom(message, sessions, client);
   },
 
 };
-
 
