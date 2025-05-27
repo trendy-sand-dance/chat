@@ -13,6 +13,7 @@ export function broadcastToRoom(message: RoomMessage, sessions: Session[], exclu
 
 }
 
+
 // Message Handler
 type MessageHandler = (data: ChatServerMessage, client: WebSocket) => void;
 

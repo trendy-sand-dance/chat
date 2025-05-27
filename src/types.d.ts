@@ -35,7 +35,9 @@ declare global {
 
   // Types
 
-  type ChatServerMessage = ConnectMessage | DisconnectMessage | TransitionMessage | RoomMessage | ChatMessage;
+  type ChatServerMessage = ConnectMessage | DisconnectMessage 
+  | TransitionMessage | RoomMessage
+  | WhisperMessage | InvitationMessage | AnnouncementMessage;
 
   type ConnectMessage = {
     type: string,
@@ -63,7 +65,7 @@ declare global {
     room: RoomType,
   }
 
-  type ChatMessage = {
+  type WhisperMessage = {
     type: string,
     fromId: number,
     toId: number,
@@ -76,6 +78,18 @@ declare global {
     id: number,
     from: RoomType,
     to: RoomType,
+  }
+
+  type InvitationMessage = { // Invite for a 1v1 game
+    type: string,
+    fromId: number,
+    toId: number,
+  }
+
+  type AnnouncementMessage = { // Tournament match announcement
+    type: string,
+    id1: number,
+    id2: number,
   }
 
 
