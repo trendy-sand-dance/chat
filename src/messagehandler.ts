@@ -16,8 +16,6 @@ function isExcluded(socket: WebSocket, excludedSockets : WebSocket[]) : boolean 
 
 function isNumberPresentInArray(id: number, array: number[]) : boolean {
 
-	console.log("IN NUMBER PRESNET");
-	console.log("array length = ", array.length);
 	for (let index = 0; index < array.length; index++) {
 		console.log("array arg check = ", array[index]);
 		console.log("ID check = ", id);
@@ -45,7 +43,6 @@ function getExcludedWebsockets(sessions : Session[], blockedUsers: Array<number>
 
 	console.log("sessions === ", sessions);
 	for (let i = 0; i < sessions.length; i++) {
-		console.log("IN FOR LOOP");
 		console.log("blockedusers + length === ", blockedUsers, blockedUsers.length);
 		if (isNumberPresentInArray(sessions[i].user.id, blockedUsers))
 		{
@@ -79,7 +76,7 @@ export const messageHandlers: Record<string, MessageHandler> = {
 	// Get all the player ids that the client has blocked
 	const response = await fetch(`${DATABASE_URL}/blocked/${message.id}`);
 	const blockedUsers = await response.json() as Array<number>;
-	console.log("blockedUsers", blockedUsers, blockedUsers.length);
+	console.log("blockedUsers", blockedUsers);
 	const excluded : WebSocket[] = getExcludedWebsockets(sessions, blockedUsers);
 	console.log("EXCLUDED = ", excluded);
 	excluded.push(client);
