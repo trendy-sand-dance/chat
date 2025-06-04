@@ -17,8 +17,12 @@ export default class ClientManager {
 
   public addSession(socket: WebSocket, user: User, room : RoomType): void {
 
+    console.log("We're adding: ", user, " to ", room);
+
     this._sessions.set(user.id, { socket, user });
     this._rooms.get(room)?.add(user.id);
+
+    console.log("this_rooms.get(room): ", this._rooms.get(room));
 
   }
 
