@@ -74,7 +74,6 @@ declare global {
   }
 
   type RoomTransition = {
-    type: string,
     id: number,
     from: RoomType,
     to: RoomType,
