@@ -31,6 +31,7 @@ export const messageHandlers: Record<string, MessageHandler> = {
 
   "connect": (data: ChatServerMessage, client: WebSocket) => {
     const message: ConnectMessage = data as ConnectMessage;
+    console.log("connect message: ", message);
     clientManager.addSession(client, message.user, message.room);
     const confirmMessage = {type:"confirm"};
     client.send(JSON.stringify(confirmMessage));
@@ -52,6 +53,13 @@ export const messageHandlers: Record<string, MessageHandler> = {
 
 	// Send message to everyone except blocked IDs
     broadcastToRoom(message, sessions, excluded);
+
+  },
+  "transition": (data: ChatServerMessage, client: WebSocket) => {
+    const message: TransitionMessage = data as TransitionMessage;
+    const roomTransition : RoomTransition = {id: message.id, from: message.from, to: message.to};
+    console.log(`Player moved ${message.from} to ${message.to}!`);
+    clientManager.transitionToRoom(roomTransition);
   },
 
 };
