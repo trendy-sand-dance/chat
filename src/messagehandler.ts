@@ -47,7 +47,6 @@ export const messageHandlers: Record<string, MessageHandler> = {
 	const response = await fetch(`${DATABASE_URL}/blocked/${message.id}`);
 	const blockedUsers = await response.json() as number[];
 
-	console.log("blocked users number array == ", blockedUsers);
 	const excluded : WebSocket[] = getExcludedWebsockets(sessions, blockedUsers);
 	excluded.push(client);
 
