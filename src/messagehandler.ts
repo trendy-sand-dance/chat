@@ -71,11 +71,8 @@ export const messageHandlers: Record<string, MessageHandler> = {
 		if (blockedUsers.some((blockedID) => msg.fromId === blockedID))
 			return (false);
 
-		
-
 		const targetSession : Session | undefined = clientManager.getSession(msg.toId);
-		// excluded.push(client); ?? is this to send the bubble to user itself?
-
+		
 	if (targetSession && targetSession.socket.readyState == 1) {
 		targetSession.socket.send(JSON.stringify(msg));
 		}
