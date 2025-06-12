@@ -44,6 +44,7 @@ export const messageHandlers: Record<string, MessageHandler> = {
   },
   "room_chat": async (data: ChatServerMessage, client: WebSocket) => {
     const message: RoomMessage = data as RoomMessage;
+	messageStorage.addRoomMessage(message);
     const sessions = clientManager.getSessionsFrom(message.room);
 
 	// Get all the player ids that the client has blocked
@@ -60,9 +61,10 @@ export const messageHandlers: Record<string, MessageHandler> = {
   "personal_chat": async (data: ChatServerMessage, client: WebSocket) => 
 	{
 		const msg: WhisperMessage = data as WhisperMessage;
+		messageStorage.addWhisperMessage(msg);
 		const response = await fetch(`${DATABASE_URL}/blocked/${msg.toId}`);
 		const blockedUsers = await response.json() as number[];
-
+		
 		 //check if sender is blocked by target
 		if (blockedUsers.some((blockedID) => msg.fromId === blockedID))
 			return (false);

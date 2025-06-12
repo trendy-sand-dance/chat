@@ -19,8 +19,7 @@ export default class MessageStorage
 
   // Getters
 
-  // GetAllMessagesExcept
-  //
+  
 	public  getAllMessagesFromRoom(room : RoomType) : RoomMessage[] | undefined 
 	{
 
@@ -28,14 +27,19 @@ export default class MessageStorage
 	//    filter fetch(db/getBlockedUsers/:id);
 	//    returns messages (xcept for the blocked)
 		return messages;
-  }
+	}
+
+	public getAllWhispersUsers(room)
+
+
 	public addRoomMessage(message : RoomMessage) : void 
 	{
 		const array = this._roomMessages.get(message.room);
 		if (array)
 		{
 			array.push(message);
-			if (array.length)
+			if (array.length > this._maxRoomMessages)
+				array.shift();
 		}
 		else
 			console.log("\n---can't find roomtype to sotre msg\n---\n");
@@ -48,7 +52,11 @@ export default class MessageStorage
 		//could add db call to check for deleted server
 		const array = this._whisperMessages.get(message.toId);
 		if (array)
+		{
 			array.push(message);
+			if (array.length > this._maxWhisperMessages)
+				array.shift();
+		}
 		 else
 			this._whisperMessages.set(message.toId, [message]);
 	}
@@ -58,9 +66,9 @@ export default class MessageStorage
 
 }
 
-//store all messags
+//store all messags ✅
 
-//1 for room msgs put in proper roomtype enum
+
 
 
 //when client clicks chat sidebar, client calls getmsg endpoint with said roomtype
