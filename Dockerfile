@@ -12,7 +12,7 @@ COPY . .
 RUN apt-get update -y && apt-get install -y openssl
 
 ARG LISTEN_ADDRESS="0.0.0.0"
-ARG LISTEN_PORT=8000
+ARG LISTEN_PORT=8004
 ENV NODE_EXTRA_CA_CERTS=/setup/server.crt
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 
