@@ -2,6 +2,7 @@ import ClientManager from './clientmanager';
 import { WebSocket } from "@fastify/websocket";
 import { clientManager } from './clientmanager';
 import { DATABASE_URL } from './config';
+import MessageStorage from './messagestorage';
 
 // Utilities
 function isExcluded(socket: WebSocket, excludedSockets: WebSocket[]): boolean {
@@ -26,6 +27,7 @@ export function broadcastToRoom(message: RoomMessage, sessions: Session[], exclu
 
 // Message Handler
 type MessageHandler = (data: ChatServerMessage, client: WebSocket) => void;
+const messageStorage = new MessageStorage();
 
 export const messageHandlers: Record<string, MessageHandler> = {
 
@@ -55,15 +57,9 @@ export const messageHandlers: Record<string, MessageHandler> = {
     broadcastToRoom(message, sessions, excluded);
 
   },
-
-
-
-
   "personal_chat": async (data: ChatServerMessage, client: WebSocket) => 
 	{
 		const msg: WhisperMessage = data as WhisperMessage;
-
-
 		const response = await fetch(`${DATABASE_URL}/blocked/${msg.toId}`);
 		const blockedUsers = await response.json() as number[];
 
