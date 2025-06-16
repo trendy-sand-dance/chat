@@ -26,6 +26,30 @@ export default class ClientManager {
 
   }
 
+  public getRoom(id : number) : RoomType | undefined {
+
+
+      this._rooms.get(RoomType.Hall)?.forEach((id) => {
+        console.log(`Player in Hall: ${id}`);
+      });
+
+    for (const [room, players] of this._rooms) {
+
+      console.log(`Logging all players in ${room}:`);
+
+      players.forEach((id) => {
+        console.log(`Player in ${room}: ${id}`);
+      });
+
+      if (players.has(id)) {
+        console.log(`getRoom(): Found player ${id} in ${room}`);
+        return room;
+      }
+
+    }
+
+  }
+
   public removeSession(id: number): boolean {
 
     return this._sessions.delete(id);

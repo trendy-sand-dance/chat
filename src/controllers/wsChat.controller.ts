@@ -1,9 +1,49 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { WebSocket } from '@fastify/websocket';
 import ClientManager from '../clientmanager';
-import { messageHandlers } from '../messagehandler';
+import { messageHandlers, messageStorage } from '../messagehandler';
+import { RoomType } from "../types.d";
+
+// enum RoomType {
+//   Cluster = "cluster",
+//   Server = "server",
+//   Game = "game",
+//   Bocal = "bocal",
+//   Hall = "hall",
+//   Toilet = "toilet",
+// }
 
 const clientManager = new ClientManager();
+
+export async function getRoomMessages(request: FastifyRequest, reply: FastifyReply) {
+
+  const {id} = request.params as { id : number };
+
+  const room : RoomType | undefined = clientManager.getRoom(id);
+  console.log("DO WE GET ID?: ", id);
+  console.log("DO WE GET THE ROOM?: ", room);
+  if (room) {
+
+    const messages : RoomMessage[] | undefined  = messageStorage.getAllMessagesFromRoom(room);
+	  return reply.code(200).send({ messages });
+
+  }
+  else {
+    return reply.code(404).send({error: "Could't fetch room messages"});
+  }
+};
+
+
+export async function getRoom(request: FastifyRequest, reply: FastifyReply) {
+
+  const {id} = request.params as { id : number };
+
+  const room : RoomType | undefined = clientManager.getRoom(id);
+  if (room) {
+    reply.code(200).send({ room: room });
+  }
+  reply.code(404).send({ room: "" });
+};
 
 
 export async function wsChatController(client: WebSocket, request: FastifyRequest) {

@@ -1,4 +1,4 @@
-import { RoomType } from "./types";
+import { RoomType } from "./types.d";
 
 export default class MessageStorage
 {
@@ -17,9 +17,7 @@ export default class MessageStorage
 		}
 	}
 
-  // Getters
-
-  
+  	// Getters
 	public  getAllMessagesFromRoom(room : RoomType) : RoomMessage[] | undefined 
 	{
 
@@ -29,8 +27,7 @@ export default class MessageStorage
 		return messages;
 	}
 
-	public getAllWhispersUsers(room)
-
+	// public getAllWhispersUsers(room)
 
 	public addRoomMessage(message : RoomMessage) : void 
 	{

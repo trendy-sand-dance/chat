@@ -27,7 +27,7 @@ export function broadcastToRoom(message: RoomMessage, sessions: Session[], exclu
 
 // Message Handler
 type MessageHandler = (data: ChatServerMessage, client: WebSocket) => void;
-const messageStorage = new MessageStorage();
+export const messageStorage = new MessageStorage();
 
 export const messageHandlers: Record<string, MessageHandler> = {
 
@@ -44,7 +44,7 @@ export const messageHandlers: Record<string, MessageHandler> = {
   },
   "room_chat": async (data: ChatServerMessage, client: WebSocket) => {
     const message: RoomMessage = data as RoomMessage;
-	messageStorage.addRoomMessage(message);
+	  messageStorage.addRoomMessage(message);
     const sessions = clientManager.getSessionsFrom(message.room);
 
 	// Get all the player ids that the client has blocked

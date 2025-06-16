@@ -91,7 +91,6 @@ declare global {
     id2: number,
   }
 
-
 }
 
 export enum RoomType {
@@ -100,5 +99,6 @@ export enum RoomType {
   Game = "game",
   Bocal = "bocal",
   Hall = "hall",
+  Toilet = "toilet",
 }
 
