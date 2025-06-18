@@ -28,17 +28,10 @@ export default class ClientManager {
 
 	public getRoom(userId: number): RoomType | undefined
 	{
-		console.log("userId === ", userId);
 		for (const [rooms, players] of this._rooms)
 		{
-		
-		if(players.size > 0) 
-		{
-			console.log('FOUND PLAYER IN ', rooms, "WITH IDs ", Array.from(players));
-			if (players.has(Number(userId)))
-				return rooms;
-
-		}
+			if(players.size > 0 && players.has(Number(userId))) 
+			return rooms;
 		}
 		console.log("cant find current player in any room!");
 		return undefined;

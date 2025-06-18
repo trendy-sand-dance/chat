@@ -53,7 +53,6 @@ export async function getMessageHistory(request: FastifyRequest, reply: FastifyR
 		return reply.code(404).send({error: "Could't find user in any room!"});
   const roomMessages : RoomMessage[] = messageStorage.getAllMessagesFromRoom(room) || [];
   const whisperMessages : WhisperMessage[] = messageStorage.getAllWhispersToUser(id) || [];
-	console.log("grabbed whisperss == ", whisperMessages.toString());
 
 
 	const combined = [...roomMessages, ...whisperMessages]

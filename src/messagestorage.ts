@@ -29,14 +29,11 @@ export default class MessageStorage
 
 	public getAllWhispersToUser(userId: number)
 	{
-		console.log("getting whispers from userID: ", userId);
-		console.log(`Current whisper map keys: ${Array.from(this._whisperMessages.keys())}`);
-
 		// Ensure userId is treated as a number
-		const numericUserId = Number(userId);
+		const numericUserId = ;
 		console.log(`Looking up with numeric ID: ${numericUserId} (type: ${typeof numericUserId})`);
 		
-		const messages: WhisperMessage[] | undefined = this._whisperMessages.get(numericUserId);
+		const messages: WhisperMessage[] | undefined = this._whisperMessages.get(Number(userId));
 
 		if (messages == undefined) {
 			console.log("couldn't find any whispers");
@@ -66,8 +63,6 @@ export default class MessageStorage
 		const numericSaveID = Number(saveID);
 		console.log("adding msg: ", message.message, " from: ", message.fromId);
 
-
-		//could add db call to check for deleted server
 		const array = this._whisperMessages.get(numericSaveID);
 		if (array)
 		{
@@ -81,21 +76,6 @@ export default class MessageStorage
 		}
 		 else
 			this._whisperMessages.set(saveID, [message]);
-
-		console.log(`Verification: Map now has entry for ${saveID}: ${this._whisperMessages.has(saveID)}`);
-
-		// Debug check by manually retrieving the just-stored message
-		const testRetrieve = this._whisperMessages.get(numericSaveID);
-		console.log(`TEST: Can retrieve message for ${numericSaveID}? ${testRetrieve !== undefined}`);
-		if (testRetrieve) {
-		console.log(`TEST: Message count: ${testRetrieve.length}`);
-		}
-
-		// Let's check explicit keys right after storing
-		const keysArray = Array.from(this._whisperMessages.keys());
-		console.log(`TEST: Explicit key check - is ${numericSaveID} included?`, keysArray.includes(numericSaveID));
-		console.log(`TEST: Explicit key check - key types:`, keysArray.map(k => typeof k));
-
 
 		if (saveID != message.fromId)
 			this.addWhisperMessage(message, message.fromId);
