@@ -26,29 +26,24 @@ export default class ClientManager {
 
   }
 
-  public getRoom(id : number) : RoomType | undefined {
+	public getRoom(userId: number): RoomType | undefined
+	{
+		console.log("userId === ", userId);
+		for (const [rooms, players] of this._rooms)
+		{
+		
+		if(players.size > 0) 
+		{
+			console.log('FOUND PLAYER IN ', rooms, "WITH IDs ", Array.from(players));
+			if (players.has(Number(userId)))
+				return rooms;
 
+		}
+		}
+		console.log("cant find current player in any room!");
+		return undefined;
+	}
 
-      this._rooms.get(RoomType.Hall)?.forEach((id) => {
-        console.log(`Player in Hall: ${id}`);
-      });
-
-    for (const [room, players] of this._rooms) {
-
-      console.log(`Logging all players in ${room}:`);
-
-      players.forEach((id) => {
-        console.log(`Player in ${room}: ${id}`);
-      });
-
-      if (players.has(id)) {
-        console.log(`getRoom(): Found player ${id} in ${room}`);
-        return room;
-      }
-
-    }
-
-  }
 
   public removeSession(id: number): boolean {
 

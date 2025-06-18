@@ -1,4 +1,3 @@
-import ClientManager from './clientmanager';
 import { WebSocket } from "@fastify/websocket";
 import { clientManager } from './clientmanager';
 import { DATABASE_URL } from './config';
@@ -61,7 +60,7 @@ export const messageHandlers: Record<string, MessageHandler> = {
   "personal_chat": async (data: ChatServerMessage, client: WebSocket) => 
 	{
 		const msg: WhisperMessage = data as WhisperMessage;
-		messageStorage.addWhisperMessage(msg);
+		messageStorage.addWhisperMessage(msg, msg.toId);
 		const response = await fetch(`${DATABASE_URL}/blocked/${msg.toId}`);
 		const blockedUsers = await response.json() as number[];
 		

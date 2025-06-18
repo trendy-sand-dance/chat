@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { getRoom, getRoomMessages, wsChatController } from '../controllers/wsChat.controller';
+import { getMessageHistory, getRoom, getRoomMessages, wsChatController } from '../controllers/wsChat.controller';
 
 export async function routes(fastify: FastifyInstance) {
 
@@ -13,5 +13,7 @@ export async function routes(fastify: FastifyInstance) {
 
   // Message storage controllers
   fastify.get('/getRoomMessages/:id', getRoomMessages);
+
+  fastify.get("/getMessageHistory/:id", getMessageHistory);
 
 };
