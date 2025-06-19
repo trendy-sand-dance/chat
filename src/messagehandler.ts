@@ -55,11 +55,41 @@ export const messageHandlers: Record<string, MessageHandler> = {
     broadcastToRoom(message, sessions, excluded);
 
   },
+
+
+
+
+  "personal_chat": async (data: ChatServerMessage, client: WebSocket) => 
+	{
+		const msg: WhisperMessage = data as WhisperMessage;
+
+
+		const response = await fetch(`${DATABASE_URL}/blocked/${msg.toId}`);
+		const blockedUsers = await response.json() as number[];
+
+		 //check if sender is blocked by target
+		if (blockedUsers.some((blockedID) => msg.fromId === blockedID))
+			return (false);
+
+		const targetSession : Session | undefined = clientManager.getSession(msg.toId);
+		
+	if (targetSession && targetSession.socket.readyState == 1) {
+		targetSession.socket.send(JSON.stringify(msg));
+		}
+	else
+		console.log("couldnt send whisper :(");
+	console.log("!!! whisper send!?");
+  },
+
+
+
+
+
   "transition": (data: ChatServerMessage, client: WebSocket) => {
     const message: TransitionMessage = data as TransitionMessage;
     const roomTransition : RoomTransition = {id: message.id, from: message.from, to: message.to};
     console.log(`Player moved ${message.from} to ${message.to}!`);
     clientManager.transitionToRoom(roomTransition);
-  },
+  }
 
 };
