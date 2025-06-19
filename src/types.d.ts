@@ -60,6 +60,7 @@ declare global {
   type RoomMessage = {
     type: string,
     id: number,
+	username: string,
     message: string,
     timestamp: string,
     room: RoomType,
@@ -68,6 +69,7 @@ declare global {
   type WhisperMessage = {
     type: string,
     fromId: number,
+	fromUsername: string,
     toId: number,
     message: string,
     timestamp: string,

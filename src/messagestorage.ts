@@ -28,11 +28,7 @@ export default class MessageStorage
 	}
 
 	public getAllWhispersToUser(userId: number)
-	{
-		// Ensure userId is treated as a number
-		const numericUserId = ;
-		console.log(`Looking up with numeric ID: ${numericUserId} (type: ${typeof numericUserId})`);
-		
+	{	
 		const messages: WhisperMessage[] | undefined = this._whisperMessages.get(Number(userId));
 
 		if (messages == undefined) {
