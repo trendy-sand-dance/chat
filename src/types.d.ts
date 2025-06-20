@@ -71,6 +71,7 @@ declare global {
     fromId: number,
 	fromUsername: string,
     toId: number,
+	toUsername: string,
     message: string,
     timestamp: string,
   }

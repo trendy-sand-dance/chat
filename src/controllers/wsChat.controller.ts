@@ -51,10 +51,8 @@ export async function getMessageHistory(request: FastifyRequest, reply: FastifyR
 	const room : RoomType | undefined = clientManager.getRoom(id);
 	if (room == undefined)
 		return reply.code(404).send({error: "Could't find user in any room!"});
-  const roomMessages : RoomMessage[] = messageStorage.getAllMessagesFromRoom(room) || [];
-  const whisperMessages : WhisperMessage[] = messageStorage.getAllWhispersToUser(id) || [];
-
-
+  	const roomMessages : RoomMessage[] = messageStorage.getAllMessagesFromRoom(room) || [];
+  	const whisperMessages : WhisperMessage[] = messageStorage.getAllWhispersToUser(id) || [];
 	const combined = [...roomMessages, ...whisperMessages]
 	.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
 	.slice(-30);
