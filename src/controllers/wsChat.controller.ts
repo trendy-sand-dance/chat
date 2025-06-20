@@ -1,9 +1,64 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { WebSocket } from '@fastify/websocket';
-import ClientManager from '../clientmanager';
-import { messageHandlers } from '../messagehandler';
+import { clientManager } from '../clientmanager';
+import { messageHandlers, messageStorage } from '../messagehandler';
+import { RoomType } from "../types.d";
 
-const clientManager = new ClientManager();
+// enum RoomType {
+//   Cluster = "cluster",
+//   Server = "server",
+//   Game = "game",
+//   Bocal = "bocal",
+//   Hall = "hall",
+//   Toilet = "toilet",
+// }
+
+
+export async function getRoomMessages(request: FastifyRequest, reply: FastifyReply) {
+
+  const {id} = request.params as { id : number };
+
+  const room : RoomType | undefined = clientManager.getRoom(id);
+  if (room) {
+
+    const messages : RoomMessage[] | undefined  = messageStorage.getAllMessagesFromRoom(room);
+	  return reply.code(200).send({ messages });
+
+  }
+  else {
+    return reply.code(404).send({error: "Could't fetch room messages"});
+  }
+};
+
+
+export async function getRoom(request: FastifyRequest, reply: FastifyReply) {
+
+  const {id} = request.params as { id : number };
+	//   const userId = Number(request.params.id);
+
+  const room : RoomType | undefined = clientManager.getRoom(id);
+  if (room) {
+    reply.code(200).send({ room: room });
+  }
+  reply.code(404).send({ room: "" });
+};
+
+
+export async function getMessageHistory(request: FastifyRequest, reply: FastifyReply)
+{
+	const {id} = request.params as { id : number };
+	//protec against no id found?
+	const room : RoomType | undefined = clientManager.getRoom(id);
+	if (room == undefined)
+		return reply.code(404).send({error: "Could't find user in any room!"});
+  	const roomMessages : RoomMessage[] = messageStorage.getAllMessagesFromRoom(room) || [];
+  	const whisperMessages : WhisperMessage[] = messageStorage.getAllWhispersToUser(id) || [];
+	const combined = [...roomMessages, ...whisperMessages]
+	.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+	.slice(-30);
+
+	 return reply.code(200).send({ messages: combined });
+}
 
 
 export async function wsChatController(client: WebSocket, request: FastifyRequest) {

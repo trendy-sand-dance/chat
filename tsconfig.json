@@ -13,7 +13,8 @@
 	  "resolveJsonModule": true,
 	  "noImplicitAny": false,
 	  "skipLibCheck": true,
-	  "forceConsistentCasingInFileNames": true
+	  "forceConsistentCasingInFileNames": true,
+	  "lib": ["es2017", "dom"]
 	},
 	"include": ["src/**/*", "src/types.d.ts"],
 	"exclude": ["node_modules"]

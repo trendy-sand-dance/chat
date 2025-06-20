@@ -60,6 +60,7 @@ declare global {
   type RoomMessage = {
     type: string,
     id: number,
+	username: string,
     message: string,
     timestamp: string,
     room: RoomType,
@@ -68,7 +69,9 @@ declare global {
   type WhisperMessage = {
     type: string,
     fromId: number,
+	fromUsername: string,
     toId: number,
+	toUsername: string,
     message: string,
     timestamp: string,
   }
@@ -91,7 +94,6 @@ declare global {
     id2: number,
   }
 
-
 }
 
 export enum RoomType {
@@ -100,5 +102,6 @@ export enum RoomType {
   Game = "game",
   Bocal = "bocal",
   Hall = "hall",
+  Toilet = "toilet",
 }
 

@@ -26,6 +26,18 @@ export default class ClientManager {
 
   }
 
+	public getRoom(userId: number): RoomType | undefined
+	{
+		for (const [rooms, players] of this._rooms)
+		{
+			if(players.size > 0 && players.has(Number(userId))) 
+			return rooms;
+		}
+		console.log("cant find current player in any room!");
+		return undefined;
+	}
+
+
   public removeSession(id: number): boolean {
 
     return this._sessions.delete(id);

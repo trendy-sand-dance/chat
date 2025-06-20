@@ -1,7 +1,7 @@
-import ClientManager from './clientmanager';
 import { WebSocket } from "@fastify/websocket";
 import { clientManager } from './clientmanager';
 import { DATABASE_URL } from './config';
+import MessageStorage from './messagestorage';
 
 // Utilities
 function isExcluded(socket: WebSocket, excludedSockets: WebSocket[]): boolean {
@@ -26,6 +26,7 @@ export function broadcastToRoom(message: RoomMessage, sessions: Session[], exclu
 
 // Message Handler
 type MessageHandler = (data: ChatServerMessage, client: WebSocket) => void;
+export const messageStorage = new MessageStorage();
 
 export const messageHandlers: Record<string, MessageHandler> = {
 
@@ -42,6 +43,7 @@ export const messageHandlers: Record<string, MessageHandler> = {
   },
   "room_chat": async (data: ChatServerMessage, client: WebSocket) => {
     const message: RoomMessage = data as RoomMessage;
+	  messageStorage.addRoomMessage(message);
     const sessions = clientManager.getSessionsFrom(message.room);
 
 	// Get all the player ids that the client has blocked
@@ -55,18 +57,13 @@ export const messageHandlers: Record<string, MessageHandler> = {
     broadcastToRoom(message, sessions, excluded);
 
   },
-
-
-
-
   "personal_chat": async (data: ChatServerMessage, client: WebSocket) => 
 	{
 		const msg: WhisperMessage = data as WhisperMessage;
-
-
+		messageStorage.addWhisperMessage(msg, msg.toId);
 		const response = await fetch(`${DATABASE_URL}/blocked/${msg.toId}`);
 		const blockedUsers = await response.json() as number[];
-
+		
 		 //check if sender is blocked by target
 		if (blockedUsers.some((blockedID) => msg.fromId === blockedID))
 			return (false);
