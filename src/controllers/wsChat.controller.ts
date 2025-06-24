@@ -54,19 +54,28 @@ export async function getMessageHistory(request: FastifyRequest, reply: FastifyR
 		return reply.code(404).send({error: "Could't find user in any room!"});
   	const roomMessages : RoomMessage[] = messageStorage.getAllMessagesFromRoom(room) || [];
   	const whisperMessages : WhisperMessage[] = messageStorage.getAllWhispersToUser(id) || [];
-	let combined = [...roomMessages, ...whisperMessages]
-	.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
-	.slice(-30);
+
 
 	const blockedResponse = await fetch(`${DATABASE_URL}/blocked/${id}`);
 	const blockedUsers = await blockedResponse.json() as number[];
 
-	combined = combined.filter(message => {
-		if ('fromId' in message) {
-			return !blockedUsers.includes(message.fromId);
-		}
-		return !blockedUsers.includes(message.id);
-	});
+	const roomFiltered = roomMessages.filter(message => {return !blockedUsers.includes(message.id)});
+	const wishperFiltered = whisperMessages.filter(message => {return !blockedUsers.includes(message.fromId)});
+
+
+	let combined = [...roomFiltered, ...wishperFiltered]
+	.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+	.slice(-30);
+
+
+//   combined = combined.filter(message => {
+//     if ('fromId' in message && typeof message.fromId === 'number') {
+//       return !blockedUsers.includes(message.fromId);
+//     } else if ('id' in message && typeof message.id === 'number') {
+//       return !blockedUsers.includes(message.id);
+//     }
+//     return true;
+//   });
 
 	 return reply.code(200).send({ messages: combined });
 }
