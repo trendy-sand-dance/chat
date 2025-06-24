@@ -3,6 +3,7 @@ import { WebSocket } from '@fastify/websocket';
 import { clientManager } from '../clientmanager';
 import { messageHandlers, messageStorage } from '../messagehandler';
 import { RoomType } from "../types.d";
+import { DATABASE_URL } from '../config';
 
 // enum RoomType {
 //   Cluster = "cluster",
@@ -53,9 +54,19 @@ export async function getMessageHistory(request: FastifyRequest, reply: FastifyR
 		return reply.code(404).send({error: "Could't find user in any room!"});
   	const roomMessages : RoomMessage[] = messageStorage.getAllMessagesFromRoom(room) || [];
   	const whisperMessages : WhisperMessage[] = messageStorage.getAllWhispersToUser(id) || [];
-	const combined = [...roomMessages, ...whisperMessages]
+	let combined = [...roomMessages, ...whisperMessages]
 	.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
 	.slice(-30);
+
+	const blockedResponse = await fetch(`${DATABASE_URL}/blocked/${id}`);
+	const blockedUsers = await blockedResponse.json() as number[];
+
+	combined = combined.filter(message => {
+		if ('fromId' in message) {
+			return !blockedUsers.includes(message.fromId);
+		}
+		return !blockedUsers.includes(message.id);
+	});
 
 	 return reply.code(200).send({ messages: combined });
 }
