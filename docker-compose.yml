@@ -7,7 +7,7 @@ services:
     environment:
       LISTEN_PORT: 3000
       LISTEN_ADDRESS: '0.0.0.0'
-      DATABASE_URL: "file:/app/server/database/database.db" # or the regular file?
+      DATABASE_URL: "file:/app/server/database/database.db"
     ports:
       - "8004:3000"
     volumes:

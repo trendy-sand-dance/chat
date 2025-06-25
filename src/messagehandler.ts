@@ -78,10 +78,6 @@ export const messageHandlers: Record<string, MessageHandler> = {
 	console.log("!!! whisper send!?");
   },
 
-
-
-
-
   "transition": (data: ChatServerMessage, client: WebSocket) => {
     const message: TransitionMessage = data as TransitionMessage;
     const roomTransition : RoomTransition = {id: message.id, from: message.from, to: message.to};

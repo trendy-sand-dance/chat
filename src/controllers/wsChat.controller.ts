@@ -5,16 +5,6 @@ import { messageHandlers, messageStorage } from '../messagehandler';
 import { RoomType } from "../types.d";
 import { DATABASE_URL } from '../config';
 
-// enum RoomType {
-//   Cluster = "cluster",
-//   Server = "server",
-//   Game = "game",
-//   Bocal = "bocal",
-//   Hall = "hall",
-//   Toilet = "toilet",
-// }
-
-
 export async function getRoomMessages(request: FastifyRequest, reply: FastifyReply) {
 
   const {id} = request.params as { id : number };
@@ -48,7 +38,6 @@ export async function getRoom(request: FastifyRequest, reply: FastifyReply) {
 export async function getMessageHistory(request: FastifyRequest, reply: FastifyReply)
 {
 	const {id} = request.params as { id : number };
-	//protec against no id found?
 	const room : RoomType | undefined = clientManager.getRoom(id);
 	if (room == undefined)
 		return reply.code(404).send({error: "Could't find user in any room!"});
@@ -92,16 +81,13 @@ export async function wsChatController(client: WebSocket, request: FastifyReques
       else {
         console.error(`Unhandled message type: ${data.type}`);
       }
-
     }
     catch (error) {
 
       console.error("Failed to process message: ", error);
 
-    }
-
-
-  });
+		}
+	});
 
 
   client.on('close', async (message: ChatServerMessage) => {

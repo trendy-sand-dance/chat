@@ -78,12 +78,8 @@ export default class ClientManager {
 
       }
     }
-
     return sessions;
-
   }
-
-
 }
 
 export const clientManager = new ClientManager();
